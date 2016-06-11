@@ -1,13 +1,15 @@
 package ru.javawebinar.topjava.model;
 
+import ru.javawebinar.topjava.LoggedUser;
+
 import java.time.LocalDateTime;
 
 /**
  * GKislin
  * 11.01.2015.
  */
-public class UserMeal {
-    private Integer id;
+public class UserMeal extends BaseEntity {
+    private final Integer userId;
 
     private final LocalDateTime dateTime;
 
@@ -20,14 +22,15 @@ public class UserMeal {
     }
 
     public UserMeal(Integer id, LocalDateTime dateTime, String description, int calories) {
-        this.id = id;
+        super(id);
+        this.userId = LoggedUser.id();
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Integer getUserId() {
+        return userId;
     }
 
     public LocalDateTime getDateTime() {
@@ -42,18 +45,11 @@ public class UserMeal {
         return calories;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public boolean isNew() {
-        return id == null;
-    }
-
     @Override
     public String toString() {
         return "UserMeal{" +
                 "id=" + id +
+                ", userId=" + userId +
                 ", dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +

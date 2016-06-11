@@ -4,8 +4,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.model.UserMeal;
+import ru.javawebinar.topjava.web.meal.UserMealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 /**
@@ -19,6 +22,9 @@ public class SpringMain {
             System.out.println(Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
             System.out.println(adminUserController.create(new User(1, "userName", "email", "password", Role.ROLE_ADMIN)));
+
+            UserMealRestController userMealRestController = appCtx.getBean(UserMealRestController.class);
+            System.out.println(userMealRestController.create(new UserMeal(1, LocalDateTime.now(), "testing", 500)));
         }
     }
 }
