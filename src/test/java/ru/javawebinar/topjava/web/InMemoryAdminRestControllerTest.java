@@ -3,12 +3,16 @@ package ru.javawebinar.topjava.web;
 import org.junit.*;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.DbPopulator;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -34,8 +38,11 @@ public class InMemoryAdminRestControllerTest {
     @Before
     public void setUp() throws Exception {
         // Re-initialize
+        DataSource dataSource = (DataSource) appCtx.getBean("dataSource");
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("db/initDB.sql"));
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("db/populateDB.sql"));
         UserRepository repository = appCtx.getBean(UserRepository.class);
-        repository.getAll().forEach(u -> repository.delete(u.getId()));
+        //repository.getAll().forEach(u -> repository.delete(u.getId()));
         repository.save(USER);
         repository.save(ADMIN);
     }

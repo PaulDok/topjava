@@ -5,6 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.javawebinar.topjava.UserTestData;
@@ -13,6 +17,7 @@ import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
+import javax.sql.DataSource;
 import java.util.Collection;
 
 import static ru.javawebinar.topjava.UserTestData.ADMIN;
@@ -34,9 +39,13 @@ public class InMemoryAdminRestControllerSpringTest {
 
     @Before
     public void setUp() throws Exception {
-        repository.getAll().forEach(u -> repository.delete(u.getId()));
-        repository.save(USER);
-        repository.save(ADMIN);
+//        repository.getAll().forEach(u -> repository.delete(u.getId()));
+//        repository.save(USER);
+//        repository.save(ADMIN);
+        ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        DataSource dataSource = (DataSource) appCtx.getBean("dataSource");
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("db/initDB.sql"));
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("db/populateDB.sql"));
     }
 
     @Test

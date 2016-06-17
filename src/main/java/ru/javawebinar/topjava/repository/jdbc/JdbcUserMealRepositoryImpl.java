@@ -1,10 +1,19 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
 
+import javax.sql.DataSource;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -15,28 +24,65 @@ import java.util.List;
 @Repository
 public class JdbcUserMealRepositoryImpl implements UserMealRepository {
 
+    private static final BeanPropertyRowMapper<UserMeal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(UserMeal.class);
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private SimpleJdbcInsert insertUserMeal;
+
+    @Autowired
+    public JdbcUserMealRepositoryImpl(DataSource dataSource) {
+        this.insertUserMeal = new SimpleJdbcInsert(dataSource)
+                .withTableName("MEALS")
+                .usingGeneratedKeyColumns("id");
+    }
+
     @Override
-    public UserMeal save(UserMeal UserMeal, int userId) {
-        return null;
+    public UserMeal save(UserMeal userMeal, int userId) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("id", userMeal.getId())
+                .addValue("user_id", userId)
+                .addValue("date_time", userMeal.getDateTime())
+                .addValue("description", userMeal.getDescription())
+                .addValue("calories", userMeal.getCalories());
+
+        if (userMeal.isNew()) {
+            Number newKey = insertUserMeal.executeAndReturnKey(map);
+            userMeal.setId(newKey.intValue());
+        } else {
+            namedParameterJdbcTemplate.update(
+                    "UPDATE meals SET user_id=:user_id, date_time=:date_time, description=:description, calories=:calories " +
+                            "WHERE id=:id", map);
+        }
+        return userMeal;
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        return false;
+        return jdbcTemplate.update("DELETE FROM meals WHERE id=" + id + " AND user_id=" + userId) != 0;
     }
 
     @Override
     public UserMeal get(int id, int userId) {
-        return null;
+        List<UserMeal> meals = jdbcTemplate.query("SElECT * FROM meals WHERE id=" + id + " AND user_id=" + userId, ROW_MAPPER);
+        return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<UserMeal> getAll(int userId) {
-        return null;
+        List<UserMeal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=" + userId + " ORDER BY date_time DESC", ROW_MAPPER);
+        return meals;
     }
 
     @Override
     public List<UserMeal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String startDateString = "'" + startDate.format(formatter) + "'";
+        String endDateString = "'" + endDate.format(formatter) + "'";
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=" + userId + " AND date_time>=" + startDateString +" AND date_time<=" + endDateString + " ORDER BY date_time DESC", ROW_MAPPER);
     }
 }
