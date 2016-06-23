@@ -23,14 +23,6 @@ public class MealTestData {
 
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static final UserMeal MEAL1 = new UserMeal(LocalDateTime.parse("2015-05-30 10:00", formatter), "Завтрак", 500);
-    public static final int MEAL1ID = MEAL1.getId();
-    public static final UserMeal MEAL2 = new UserMeal(LocalDateTime.parse("2015-05-30 13:00", formatter), "Обед", 1000);
-    public static final UserMeal MEAL3 = new UserMeal(LocalDateTime.parse("2015-05-30 20:00", formatter), "Ужин", 500);
-    public static final UserMeal MEAL4 = new UserMeal(LocalDateTime.parse("2015-05-31 10:00", formatter), "Завтрак", 1000);
-    public static final UserMeal MEAL5 = new UserMeal(LocalDateTime.parse("2015-05-31 13:00", formatter), "Обед", 500);
-    public static final UserMeal MEAL6 = new UserMeal(LocalDateTime.parse("2015-05-31 20:00", formatter), "Ужин", 510);
-
     public static final int MEAL1_ID = START_SEQ + 2;
     public static final int ADMIN_MEAL_ID = START_SEQ + 8;
 
