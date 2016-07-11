@@ -25,7 +25,7 @@ public class UserMealRestController {
 
     @Autowired
     private UserMealService service;
-
+    
     public UserMeal get(int id) {
         int userId = AuthorizedUser.id();
         LOG.info("get meal {} for User {}", id, userId);
