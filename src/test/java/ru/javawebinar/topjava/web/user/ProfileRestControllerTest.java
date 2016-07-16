@@ -21,6 +21,7 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     public void testGet() throws Exception {
+        jpaUtil.clear2ndLevelHibernateCache();
         TestUtil.print(mockMvc.perform(get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

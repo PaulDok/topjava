@@ -31,4 +31,50 @@ public class RootControllerTest extends AbstractControllerTest {
                         )
                 )));
     }
+
+    @Test
+    public void testMealList() throws Exception {
+        mockMvc.perform(get("/meals"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("mealList"))
+                .andExpect(forwardedUrl("/WEB-INF/jsp/mealList.jsp"))
+                .andExpect(model().attribute("mealList", hasSize(6)))
+                .andExpect(model().attribute("mealList", hasItem(
+                        allOf(
+                                hasProperty("description", is("Завтрак")),
+                                hasProperty("calories", is(500))
+                        )
+                )))
+                .andExpect(model().attribute("mealList", hasItem(
+                        allOf(
+                                hasProperty("description", is("Обед")),
+                                hasProperty("calories", is(1000))
+                        )
+                )))
+                .andExpect(model().attribute("mealList", hasItem(
+                        allOf(
+                                hasProperty("description", is("Ужин")),
+                                hasProperty("calories", is(500))
+                        )
+                )))
+                .andExpect(model().attribute("mealList", hasItem(
+                        allOf(
+                                hasProperty("description", is("Завтрак")),
+                                hasProperty("calories", is(500))
+                        )
+                )))
+                .andExpect(model().attribute("mealList", hasItem(
+                        allOf(
+                                hasProperty("description", is("Обед")),
+                                hasProperty("calories", is(1000))
+                        )
+                )))
+                .andExpect(model().attribute("mealList", hasItem(
+                        allOf(
+                                hasProperty("description", is("Ужин")),
+                                hasProperty("calories", is(510))
+                        )
+                )));
+    }
 }
