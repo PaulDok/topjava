@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.UserMeal;
@@ -49,7 +48,6 @@ public class UserMealServiceImpl implements UserMealService {
         return ExceptionUtil.checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
-    @CacheEvict(value = "meals", allEntries = true)
     @Transactional
     @Override
     public UserMeal update(UserMealWithExceed mealTo, int userId) {
