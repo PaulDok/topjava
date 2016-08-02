@@ -49,6 +49,12 @@ public abstract class AbstractUserMealController {
         service.update(meal, userId);
     }
 
+    public void update(UserMealWithExceed mealTo) {
+        int userId = AuthorizedUser.id();
+        LOG.info("update {} for User {}", mealTo, userId);
+        service.update(mealTo, userId);
+    }
+
     public UserMeal create(UserMeal meal) {
         meal.setId(null);
         int userId = AuthorizedUser.id();

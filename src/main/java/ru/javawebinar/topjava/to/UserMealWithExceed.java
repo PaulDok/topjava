@@ -1,23 +1,36 @@
 package ru.javawebinar.topjava.to;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * GKislin
  * 11.01.2015.
  */
-public class UserMealWithExceed {
-    private final Integer id;
+public class UserMealWithExceed implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private Integer id;
 
-    private final LocalDateTime dateTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime dateTime;
 
-    private final String description;
+    @NotEmpty(message = " must not be empty")
+    private String description;
 
-    private final int calories;
+    @Range(min = 0)
+    @NotNull(message = " must not be empty")
+    private Integer calories;
 
-    private final boolean exceed;
+    private boolean exceed;
+
+    public UserMealWithExceed() {
+    }
 
     public UserMealWithExceed(@JsonProperty("id") Integer id,
                               @JsonProperty("dateTime") LocalDateTime dateTime,
@@ -35,20 +48,44 @@ public class UserMealWithExceed {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public int getCalories() {
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getCalories() {
         return calories;
+    }
+
+    public void setCalories(Integer calories) {
+        this.calories = calories;
     }
 
     public boolean isExceed() {
         return exceed;
+    }
+
+    public void setExceed(boolean exceed) {
+        this.exceed = exceed;
+    }
+
+    public boolean isNew() {
+        return id == null;
     }
 
     @Override

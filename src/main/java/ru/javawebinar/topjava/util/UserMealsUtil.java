@@ -66,4 +66,15 @@ public class UserMealsUtil {
     public static UserMealWithExceed createWithExceed(UserMeal um, boolean exceeded) {
         return new UserMealWithExceed(um.getId(), um.getDateTime(), um.getDescription(), um.getCalories(), exceeded);
     }
+
+    public static UserMeal createNewFromTo(UserMealWithExceed newMeal) {
+        return new UserMeal(null, newMeal.getDateTime(), newMeal.getDescription(), newMeal.getCalories());
+    }
+
+    public static UserMeal updateFromTo(UserMeal meal, UserMealWithExceed mealTo) {
+        meal.setDateTime(mealTo.getDateTime());
+        meal.setDescription(mealTo.getDescription());
+        meal.setCalories(mealTo.getCalories());
+        return meal;
+    }
 }

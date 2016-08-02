@@ -1,10 +1,15 @@
 package ru.javawebinar.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
+import ru.javawebinar.topjava.to.UserMealWithExceed;
+import ru.javawebinar.topjava.util.UserMealsUtil;
 import ru.javawebinar.topjava.util.exception.ExceptionUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -42,6 +47,14 @@ public class UserMealServiceImpl implements UserMealService {
     @Override
     public UserMeal update(UserMeal meal, int userId) {
         return ExceptionUtil.checkNotFoundWithId(repository.save(meal, userId), meal.getId());
+    }
+
+    @CacheEvict(value = "meals", allEntries = true)
+    @Transactional
+    @Override
+    public UserMeal update(UserMealWithExceed mealTo, int userId) {
+        UserMeal meal = get(mealTo.getId(), userId);
+        return repository.save(UserMealsUtil.updateFromTo(meal, mealTo), userId);
     }
 
     @Override
