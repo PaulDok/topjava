@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import ru.javawebinar.topjava.AuthorizedUser;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.UserUtil;
+import ru.javawebinar.topjava.util.exception.EmailExistingException;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.user.AbstractUserController;
 
 import javax.validation.Valid;
@@ -80,6 +83,12 @@ public class RootController extends AbstractUserController {
             model.addAttribute("register", true);
             return "profile";
         } else {
+            try {
+                User existing = super.getByMail(userTo.getEmail());
+                if (!existing.getId().equals(userTo.getId())) {
+                    throw new EmailExistingException();
+                }
+            } catch (NotFoundException ignored) {}
             super.create(UserUtil.createNewFromTo(userTo));
             status.setComplete();
             return "redirect:login?message=app.registered";

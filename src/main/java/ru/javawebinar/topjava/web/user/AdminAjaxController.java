@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.UserUtil;
+import ru.javawebinar.topjava.util.exception.EmailExistingException;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.util.exception.UnprocessableEntityException;
 import ru.javawebinar.topjava.web.ExceptionInfoHandler;
 
@@ -45,6 +47,14 @@ public class AdminAjaxController extends AbstractUserController implements Excep
             throw new UnprocessableEntityException(sb.toString());
 //            return new ResponseEntity<>(sb.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
+
+        try {
+            User existing = super.getByMail(userTo.getEmail());
+            if (!existing.getId().equals(userTo.getId())) {
+                throw new EmailExistingException();
+            }
+        } catch (NotFoundException ignored) {}
+
         if (userTo.isNew()) {
             super.create(UserUtil.createNewFromTo(userTo));
         } else {

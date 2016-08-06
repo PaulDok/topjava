@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import ru.javawebinar.topjava.util.exception.EmailExistingException;
 import ru.javawebinar.topjava.util.exception.ErrorInfo;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.util.exception.UnprocessableEntityException;
@@ -60,6 +61,14 @@ public interface ExceptionInfoHandler {
     @ResponseBody
     @Order(Ordered.HIGHEST_PRECEDENCE)
     default ErrorInfo handleError(HttpServletRequest req, MethodArgumentNotValidException e) {
+        return logAndGetErrorInfo(req, e, true);
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(EmailExistingException.class)
+    @ResponseBody
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    default ErrorInfo handleError(HttpServletRequest req, EmailExistingException e) {
         return logAndGetErrorInfo(req, e, true);
     }
 
