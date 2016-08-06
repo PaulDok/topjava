@@ -10,6 +10,8 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.web.ExceptionInfoHandler;
 
+import javax.validation.Valid;
+
 /**
  * GKislin
  * 06.03.2015.
@@ -30,7 +32,7 @@ public class ProfileRestController extends AbstractUserController implements Exc
     }
 
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@RequestBody UserTo userTo) {
+    public void update(@Valid @RequestBody UserTo userTo) {
         userTo.setId(AuthorizedUser.id());
         super.update(userTo);
     }
