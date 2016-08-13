@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava;
 
-import ru.javawebinar.topjava.TestUtil.ToStringModelMatcher;
 import ru.javawebinar.topjava.matcher.ModelMatcher;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.to.UserMealWithExceed;
@@ -21,8 +20,8 @@ import static ru.javawebinar.topjava.model.BaseEntity.START_SEQ;
  */
 public class MealTestData {
 
-    public static final ModelMatcher<UserMeal, String> MATCHER = new ToStringModelMatcher<>(UserMeal.class);
-    public static final ModelMatcher<UserMealWithExceed, String> MATCHER_WITH_EXCEED = new ToStringModelMatcher<>(UserMealWithExceed.class);
+    public static final ModelMatcher<UserMeal> MATCHER = new ModelMatcher<>(UserMeal.class);
+    public static final ModelMatcher<UserMealWithExceed> MATCHER_WITH_EXCEED = new ModelMatcher<>(UserMealWithExceed.class);
 
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
